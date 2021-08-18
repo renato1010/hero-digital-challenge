@@ -76,14 +76,15 @@ function App() {
   useEffect(() => {
     console.log({ state });
   });
-  const inputEventHandler = (evt: ChangeEvent<HTMLInputElement>) => {
+  const fieldEventHandler = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = evt.target;
+    console.log({ name, value });
     dispatch({ type: name as StateKeys, payload: value });
   };
-  const onSelectHandler = (evt: ChangeEvent<HTMLSelectElement>) => {
-    const { name, value } = evt.target;
-    dispatch({ type: name as StateKeys, payload: value });
-  };
+  // const onSelectHandler = (evt: ChangeEvent<HTMLSelectElement>) => {
+  //   const { name, value } = evt.target;
+  //   dispatch({ type: name as StateKeys, payload: value });
+  // };
   return (
     <main className={styles.shell}>
       <div className={styles.container}>
@@ -97,7 +98,7 @@ function App() {
                   {...field}
                   hasError={!!state[field.name as StateKeys]["errors"].length}
                   errorMessage={state[field.name as StateKeys]["errors"]?.[0]?.message ?? undefined}
-                  onInputChange={inputEventHandler}
+                  onInputChange={fieldEventHandler}
                 />
               </div>
             ))}
@@ -115,7 +116,7 @@ function App() {
                 styles.textField + " " + (selectField.hasError ? styles.errorState : styles.noErrorState)
               }
               name="euResident"
-              onChange={onSelectHandler}
+              onChange={fieldEventHandler}
               value={state["euResident"]["value"] as string}
             >
               <option value="">-SELECT ONE - {">"}</option>
@@ -126,7 +127,7 @@ function App() {
           <fieldset className={styles.boxes}>
             {checkboxFields.map((cbField) => (
               <div key={cbField.name} className={styles.textInput}>
-                <CheckBoxField {...cbField} />
+                <CheckBoxField {...cbField} onInputChange={fieldEventHandler} />
               </div>
             ))}
           </fieldset>

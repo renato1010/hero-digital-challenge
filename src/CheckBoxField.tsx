@@ -7,11 +7,12 @@ const CheckBoxField = ({
   isRequired = true,
   hasError = false,
   errorMessage,
+  onInputChange,
 }: TextFieldProps) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.formGroup}>
-        <input type="checkbox" id={name} />
+        <input type="checkbox" name={name} />
         <label htmlFor={name}>{labelName}</label>
       </div>
     </div>
