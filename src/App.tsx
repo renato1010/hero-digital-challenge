@@ -1,7 +1,47 @@
+import { ChangeEvent, useEffect, useReducer } from "react";
 import styles from "./App.module.scss";
 import { CheckBoxField } from "./CheckBoxField";
 import { TextFieldProps, TextField } from "./TextField";
+import { validator } from "./utils/validation";
 
+export type StateKeys =
+  | "firstName"
+  | "lastName"
+  | "email"
+  | "organization"
+  | "euResident"
+  | "advances"
+  | "alerts"
+  | "other";
+export type ValidatorError = { field: StateKeys; message: string } | null;
+type StateValue = { value: string | boolean; errors: ValidatorError[] };
+const initialState: Record<StateKeys, StateValue> = {
+  firstName: { value: "", errors: [] },
+  lastName: { value: "", errors: [] },
+  email: { value: "", errors: [] },
+  organization: { value: "", errors: [] },
+  euResident: { value: "", errors: [] },
+  advances: { value: false, errors: [] },
+  alerts: { value: false, errors: [] },
+  other: { value: false, errors: [] },
+};
+type FormState = typeof initialState;
+type FormActions = { type: StateKeys; payload: string | boolean };
+function formReducer(state: FormState, action: FormActions): FormState {
+  const validated = validator[action.type](action.payload);
+  if (validated === null) {
+    return { ...state, [action.type]: { ...state[action.type], value: action.payload, errors: [] } };
+  } else {
+    return {
+      ...state,
+      [action.type]: {
+        ...state[action.type],
+        value: action.payload,
+        errors: [...state[action.type]["errors"], validated],
+      },
+    };
+  }
+}
 const textFields: TextFieldProps[] = [
   { name: "firstName", labelName: "first name" },
   { name: "lastName", labelName: "last name" },
@@ -32,6 +72,14 @@ const checkboxFields: TextFieldProps[] = [
   },
 ];
 function App() {
+  const [state, dispatch] = useReducer(formReducer, initialState);
+  useEffect(() => {
+    // console.log({ state });
+  });
+  const inputEventHandler = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = evt.target;
+    dispatch({ type: name as StateKeys, payload: value });
+  };
   return (
     <main className={styles.shell}>
       <div className={styles.container}>
@@ -40,8 +88,13 @@ function App() {
         <form className={styles.form}>
           <fieldset className={styles.boxes}>
             {textFields.map((field) => (
-              <div className={styles.textInput}>
-                <TextField {...field} />
+              <div key={field.name} className={styles.textInput}>
+                <TextField
+                  {...field}
+                  hasError={!!state[field.name as StateKeys]["errors"].length}
+                  errorMessage={state[field.name as StateKeys]["errors"]?.[0]?.message ?? undefined}
+                  onInputChange={inputEventHandler}
+                />
               </div>
             ))}
           </fieldset>
@@ -58,12 +111,12 @@ function App() {
             >
               <option value="">-SELECT ONE - {">"}</option>
               <option value="yes">Yes</option>
-              <option value="yes">No</option>
+              <option value="no">No</option>
             </select>
           </div>
           <fieldset className={styles.boxes}>
             {checkboxFields.map((cbField) => (
-              <div className={styles.textInput}>
+              <div key={cbField.name} className={styles.textInput}>
                 <CheckBoxField {...cbField} />
               </div>
             ))}
