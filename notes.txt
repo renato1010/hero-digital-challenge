@@ -8,3 +8,6 @@ npm version: 7.20.1
 screenshot
 
 Accessibility in React: https://reactjs.org/docs/accessibility.html
+Add Google fonts, using the Imports and @font-face see: https://facebook.github.io/create-react-app/docs/adding-images-fonts-and-files
+
+take-home project: https://coderbyte.com/question/question-custom-takehome-project-69vwsxc9qo

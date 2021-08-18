@@ -1,0 +1,40 @@
+@import "./variables";
+
+.wrapper {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0.5rem;
+}
+.error-msg {
+  display: inline-block;
+  color: $error-color;
+  font-style: italic;
+  font-size: 0.9rem;
+  margin: 0;
+}
+.textField {
+  height: 3em;
+  border: none;
+}
+input:focus {
+  border: 2px solid $active-color;
+}
+input:disabled {
+  border: 2px solid $disabled-color;
+}
+.label {
+  text-transform: uppercase;
+  font-size: 0.9rem;
+  color: #313030;
+}
+.noErrorState {
+  border: 2px solid $ok-color;
+}
+.errorState {
+  border: 2px solid $error-color;
+}
+
+@media (min-width: 768px) {
+}
