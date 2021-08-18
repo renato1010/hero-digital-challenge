@@ -74,9 +74,13 @@ const checkboxFields: TextFieldProps[] = [
 function App() {
   const [state, dispatch] = useReducer(formReducer, initialState);
   useEffect(() => {
-    // console.log({ state });
+    console.log({ state });
   });
   const inputEventHandler = (evt: ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = evt.target;
+    dispatch({ type: name as StateKeys, payload: value });
+  };
+  const onSelectHandler = (evt: ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = evt.target;
     dispatch({ type: name as StateKeys, payload: value });
   };
@@ -99,15 +103,20 @@ function App() {
             ))}
           </fieldset>
           <div className={styles.selectWrapper}>
-            {selectField.hasError ? <p className={styles["error-msg"]}>{selectField.errorMessage}</p> : null}
+            {!!state["euResident"]["errors"].length ? (
+              <p className={styles["error-msg"]}>{state["euResident"]["errors"]?.[0]?.message}</p>
+            ) : null}
             <label className={styles.label} htmlFor="euResident">
               {selectField.labelName + (selectField.isRequired ? "*" : "")}
             </label>
             <select
+              style={!!state["euResident"]["errors"].length ? { border: "2px solid #d40462" } : undefined}
               className={
                 styles.textField + " " + (selectField.hasError ? styles.errorState : styles.noErrorState)
               }
               name="euResident"
+              onChange={onSelectHandler}
+              value={state["euResident"]["value"] as string}
             >
               <option value="">-SELECT ONE - {">"}</option>
               <option value="yes">Yes</option>
