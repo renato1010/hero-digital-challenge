@@ -1,0 +1,10 @@
+Adding Sass stylesheets
+We'll use css modules, but for for integrating CSS preprocessor (SCSS) we need install
+package: node-sass
+
+versions:
+node version: v14.16.1
+npm version: 7.20.1
+screenshot
+
+Accessibility in React: https://reactjs.org/docs/accessibility.html

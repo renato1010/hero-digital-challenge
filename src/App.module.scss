@@ -1,3 +1,11 @@
+.shell {
+  width: 100vw;
+  font-family: "Open Sans", sans-serif;
+}
+.container {
+  width: 100%;
+  background-image: url("./assets/img/texture.png");
+}
 .App {
   text-align: center;
 }
@@ -35,4 +43,7 @@
   to {
     transform: rotate(360deg);
   }
+}
+
+@media (min-width: 768px) {
 }
