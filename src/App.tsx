@@ -68,6 +68,14 @@ function App() {
               </div>
             ))}
           </fieldset>
+          <fieldset className={styles.boxes}>
+            <div className={styles.buttonWrapper}>
+              <button className={styles.btnSubmit}>SUBMIT</button>
+            </div>
+            <div className={styles.buttonWrapper}>
+              <button>RESET</button>
+            </div>
+          </fieldset>
         </form>
       </div>
     </main>
