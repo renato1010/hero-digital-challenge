@@ -1,3 +1,13 @@
 # Work in progress
 
-right now wed Aug 18, have only responsive layout, logic is pending
+Done:
+
+- Layout
+- State Management
+- Frontend validation
+
+Pending:
+
+- Backend mock/Form submission
+
+[screenshot-video](https://drive.google.com/file/d/17kLyqapEANgvYyam9TiTLRJ0HPrqkLKz/view?usp=sharing)
