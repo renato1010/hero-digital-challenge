@@ -13,3 +13,8 @@ Add Google fonts, using the Imports and @font-face see: https://facebook.github.
 take-home project: https://coderbyte.com/question/question-custom-takehome-project-69vwsxc9qo
 
 layout is done: 
+state handle done
+validation done
+* fix validation bug
+
+screenshot: https://drive.google.com/file/d/1c6OkwniQEQ7B4UECuJyF2bD0pYm5Ja-A/view?usp=sharing
