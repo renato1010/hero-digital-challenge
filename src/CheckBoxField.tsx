@@ -1,3 +1,4 @@
+import { StateKeys } from "./App";
 import styles from "./CheckBoxField.module.scss";
 import { TextFieldProps } from "./TextField";
 
@@ -7,13 +8,25 @@ const CheckBoxField = ({
   isRequired = true,
   hasError = false,
   errorMessage,
-  onInputChange,
-}: TextFieldProps) => {
+  isChecked,
+  checkboxEventHandler,
+}: TextFieldProps & {
+  isChecked: boolean;
+  checkboxEventHandler: ({ name, isChecked }: { name: StateKeys; isChecked: boolean }) => void;
+}) => {
   return (
     <div className={styles.wrapper}>
+      {hasError ? <p className={styles["error-msg"]}>{errorMessage}</p> : null}
       <div className={styles.formGroup}>
-        <input type="checkbox" name={name} />
-        <label htmlFor={name}>{labelName}</label>
+        <input
+          onChange={() => checkboxEventHandler({ name, isChecked })}
+          type="checkbox"
+          name={name}
+          id={name}
+          value={name}
+          checked={isChecked}
+        />
+        <label htmlFor={name}>{labelName + (isRequired ? "*" : "")}</label>
       </div>
     </div>
   );

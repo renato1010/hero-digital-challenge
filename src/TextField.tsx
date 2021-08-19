@@ -1,8 +1,9 @@
 import { ChangeEvent, CSSProperties } from "react";
+import { StateKeys } from "./App";
 import styles from "./TextField.module.scss";
 
 export type TextFieldProps = {
-  name: string;
+  name: StateKeys;
   labelName: string;
   isRequired?: boolean;
   hasError?: boolean;

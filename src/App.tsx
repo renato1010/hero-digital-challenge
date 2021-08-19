@@ -1,8 +1,8 @@
-import { ChangeEvent, useEffect, useReducer } from "react";
+import { ChangeEvent, useEffect, useReducer, useState } from "react";
 import styles from "./App.module.scss";
 import { CheckBoxField } from "./CheckBoxField";
 import { TextFieldProps, TextField } from "./TextField";
-import { validator } from "./utils/validation";
+import { validator, isFormDataValid } from "./utils/validation";
 
 export type StateKeys =
   | "firstName"
@@ -14,19 +14,19 @@ export type StateKeys =
   | "alerts"
   | "other";
 export type ValidatorError = { field: StateKeys; message: string } | null;
-type StateValue = { value: string | boolean; errors: ValidatorError[] };
+export type StateValue = { value: string; errors: ValidatorError[] };
 const initialState: Record<StateKeys, StateValue> = {
   firstName: { value: "", errors: [] },
   lastName: { value: "", errors: [] },
   email: { value: "", errors: [] },
   organization: { value: "", errors: [] },
   euResident: { value: "", errors: [] },
-  advances: { value: false, errors: [] },
-  alerts: { value: false, errors: [] },
-  other: { value: false, errors: [] },
+  advances: { value: "", errors: [] },
+  alerts: { value: "", errors: [] },
+  other: { value: "", errors: [] },
 };
 type FormState = typeof initialState;
-type FormActions = { type: StateKeys; payload: string | boolean };
+type FormActions = { type: StateKeys; payload: string };
 function formReducer(state: FormState, action: FormActions): FormState {
   const validated = validator[action.type](action.payload);
   if (validated === null) {
@@ -37,7 +37,7 @@ function formReducer(state: FormState, action: FormActions): FormState {
       [action.type]: {
         ...state[action.type],
         value: action.payload,
-        errors: [...state[action.type]["errors"], validated],
+        errors: [validated],
       },
     };
   }
@@ -73,18 +73,25 @@ const checkboxFields: TextFieldProps[] = [
 ];
 function App() {
   const [state, dispatch] = useReducer(formReducer, initialState);
+  const [isFormValid, setIsFormValid] = useState(false);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   useEffect(() => {
-    console.log({ state });
+    if (isFormDataValid(state)) {
+      setIsFormValid(true);
+    }
   });
   const fieldEventHandler = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = evt.target;
-    console.log({ name, value });
     dispatch({ type: name as StateKeys, payload: value });
   };
-  // const onSelectHandler = (evt: ChangeEvent<HTMLSelectElement>) => {
-  //   const { name, value } = evt.target;
-  //   dispatch({ type: name as StateKeys, payload: value });
-  // };
+  const checkBoxEventHandler = (evt: { name: StateKeys; isChecked: boolean }) => {
+    const { name, isChecked } = evt;
+    if (!isChecked) {
+      dispatch({ type: name, payload: name });
+    } else {
+      dispatch({ type: name, payload: "" });
+    }
+  };
   return (
     <main className={styles.shell}>
       <div className={styles.container}>
@@ -96,8 +103,8 @@ function App() {
               <div key={field.name} className={styles.textInput}>
                 <TextField
                   {...field}
-                  hasError={!!state[field.name as StateKeys]["errors"].length}
-                  errorMessage={state[field.name as StateKeys]["errors"]?.[0]?.message ?? undefined}
+                  hasError={!!state[field.name]["errors"].length}
+                  errorMessage={state[field.name]["errors"]?.[0]?.message ?? undefined}
                   onInputChange={fieldEventHandler}
                 />
               </div>
@@ -127,13 +134,21 @@ function App() {
           <fieldset className={styles.boxes}>
             {checkboxFields.map((cbField) => (
               <div key={cbField.name} className={styles.textInput}>
-                <CheckBoxField {...cbField} onInputChange={fieldEventHandler} />
+                <CheckBoxField
+                  {...cbField}
+                  checkboxEventHandler={checkBoxEventHandler}
+                  hasError={!!state[cbField.name]["errors"].length}
+                  errorMessage={state[cbField.name]["errors"]?.[0]?.message ?? undefined}
+                  isChecked={!!state[cbField.name]["value"]}
+                />
               </div>
             ))}
           </fieldset>
           <fieldset className={styles.boxes}>
             <div className={styles.buttonWrapper}>
-              <button className={styles.btnSubmit}>SUBMIT</button>
+              <button disabled={!isFormValid || !state["advances"]["value"]} className={styles.btnSubmit}>
+                SUBMIT
+              </button>
             </div>
             <div className={styles.buttonWrapper}>
               <button>RESET</button>

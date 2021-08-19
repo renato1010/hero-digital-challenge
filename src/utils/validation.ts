@@ -1,29 +1,20 @@
-import { StateKeys, ValidatorError } from "../App";
+import { StateKeys, ValidatorError, StateValue } from "../App";
 
-type ValidatorFunction = (value: string | boolean) => ValidatorError;
+type ValidatorFunction = (value: string) => ValidatorError;
 type ValidatorObj = Record<StateKeys, ValidatorFunction>;
-const firstNameValidator: ValidatorFunction = (val: string | boolean) => {
-  if (typeof val === "boolean") {
-    return { field: "firstName", message: "First name is a string value" };
-  }
+const firstNameValidator: ValidatorFunction = (val: string) => {
   if (val.length < 1) {
     return { field: "firstName", message: "First Name is required" };
   }
   return null;
 };
-const lastNameValidator: ValidatorFunction = (val: string | boolean) => {
-  if (typeof val === "boolean") {
-    return { field: "lastName", message: "Last name is a string value" };
-  }
+const lastNameValidator: ValidatorFunction = (val: string) => {
   if (val.length < 1) {
     return { field: "lastName", message: "Last Name is required" };
   }
   return null;
 };
-const emailValidator: ValidatorFunction = (val: string | boolean) => {
-  if (typeof val === "boolean") {
-    return { field: "email", message: "Email is a string value" };
-  }
+const emailValidator: ValidatorFunction = (val: string) => {
   const re =
     /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
   const isEmailOk = re.test(val.toLowerCase());
@@ -33,31 +24,22 @@ const emailValidator: ValidatorFunction = (val: string | boolean) => {
   }
   return null;
 };
-const organizationValidator: ValidatorFunction = (val: string | boolean) => {
-  if (typeof val === "boolean") {
-    return { field: "organization", message: "Organization is a string value" };
-  }
+const organizationValidator: ValidatorFunction = (val: string) => {
   return null;
 };
-const euResidentValidator: ValidatorFunction = (val: string | boolean) => {
-  if (typeof val === "boolean") {
-    return { field: "euResident", message: "euResident is a string value" };
-  }
+const euResidentValidator: ValidatorFunction = (val: string) => {
   if (val.length === 0) {
     return { field: "euResident", message: "EU Resident is required" };
   }
   return null;
 };
-const advancesValidator: ValidatorFunction = (val: string | boolean) => {
-  if (typeof val === "string") {
-    return { field: "advances", message: "Advances is a true/false value" };
-  }
-  if (val === false) {
+const advancesValidator: ValidatorFunction = (val: string) => {
+  if (val !== "advances") {
     return { field: "advances", message: "Advances is required" };
   }
   return null;
 };
-const nonReqCheckboxValidator: ValidatorFunction = (val: string | boolean) => {
+const nonReqCheckboxValidator: ValidatorFunction = (val: string) => {
   return null;
 };
 
@@ -70,4 +52,14 @@ export const validator: ValidatorObj = {
   advances: advancesValidator,
   alerts: nonReqCheckboxValidator,
   other: nonReqCheckboxValidator,
+};
+
+export const isFormDataValid = (state: Record<StateKeys, StateValue>): boolean => {
+  const required: StateKeys[] = ["firstName", "lastName", "email", "euResident"];
+  const allRequiredOk = required.every((name) => {
+    const isOk = validator[name](state[name]["value"]) === null;
+    return isOk;
+  });
+  const advancesIsOk = state["advances"]["value"] === "advances";
+  return allRequiredOk && advancesIsOk;
 };
