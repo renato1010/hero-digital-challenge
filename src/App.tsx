@@ -1,8 +1,8 @@
 import { ChangeEvent, useEffect, useReducer, useState } from "react";
 import styles from "./App.module.scss";
 import { CheckBoxField } from "./CheckBoxField";
-import { TextFieldProps, TextField } from "./TextField";
-import { validator, isFormDataValid } from "./utils/validation";
+import { TextField } from "./TextField";
+import { validator, isFormDataValid, textFields, selectField, checkboxFields } from "./utils";
 
 export type StateKeys =
   | "firstName"
@@ -42,35 +42,6 @@ function formReducer(state: FormState, action: FormActions): FormState {
     };
   }
 }
-const textFields: TextFieldProps[] = [
-  { name: "firstName", labelName: "first name" },
-  { name: "lastName", labelName: "last name" },
-  { name: "email", labelName: "email address" },
-  { name: "organization", labelName: "organization", isRequired: false },
-];
-const selectField: TextFieldProps = {
-  name: "euResident",
-  labelName: "eu resident",
-  isRequired: true,
-  hasError: false,
-  errorMessage: undefined,
-};
-const checkboxFields: TextFieldProps[] = [
-  {
-    name: "advances",
-    labelName: "advanced",
-  },
-  {
-    name: "alerts",
-    labelName: "alerts",
-    isRequired: false,
-  },
-  {
-    name: "other",
-    labelName: "other communications",
-    isRequired: false,
-  },
-];
 function App() {
   const [state, dispatch] = useReducer(formReducer, initialState);
   const [isFormValid, setIsFormValid] = useState(false);
@@ -78,6 +49,8 @@ function App() {
   useEffect(() => {
     if (isFormDataValid(state)) {
       setIsFormValid(true);
+    } else {
+      setIsFormValid(false);
     }
   });
   const fieldEventHandler = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -146,7 +119,7 @@ function App() {
           </fieldset>
           <fieldset className={styles.boxes}>
             <div className={styles.buttonWrapper}>
-              <button disabled={!isFormValid || !state["advances"]["value"]} className={styles.btnSubmit}>
+              <button disabled={!isFormValid} className={styles.btnSubmit}>
                 SUBMIT
               </button>
             </div>

@@ -55,11 +55,10 @@ export const validator: ValidatorObj = {
 };
 
 export const isFormDataValid = (state: Record<StateKeys, StateValue>): boolean => {
-  const required: StateKeys[] = ["firstName", "lastName", "email", "euResident"];
+  const required: StateKeys[] = ["firstName", "lastName", "email", "euResident", "advances"];
   const allRequiredOk = required.every((name) => {
-    const isOk = validator[name](state[name]["value"]) === null;
-    return isOk;
+    const isValOk = validator[name](state[name]["value"]) === null;
+    return isValOk;
   });
-  const advancesIsOk = state["advances"]["value"] === "advances";
-  return allRequiredOk && advancesIsOk;
+  return allRequiredOk;
 };
