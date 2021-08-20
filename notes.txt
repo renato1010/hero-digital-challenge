@@ -18,3 +18,7 @@ validation done
 * fix validation bug
 
 screenshot: https://drive.google.com/file/d/1c6OkwniQEQ7B4UECuJyF2bD0pYm5Ja-A/view?usp=sharing
+
+mock server response: 
+
+for mocking server I used: Mock Service Worker (https://mswjs.io/)
