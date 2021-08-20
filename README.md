@@ -5,7 +5,7 @@
 - Frontend validation
 - Mock Server Response
 
-### Layout
+## Layout
 
 The project was build based on `create-react-app` package  
 React code was written in `Typescript`  
