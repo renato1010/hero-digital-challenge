@@ -1,5 +1,3 @@
-# Work in progress
-
 ## Features:
 
 - Layout
@@ -40,10 +38,10 @@ On browser console you'll see:
 
 Then fill in required form fields and hit _submit_ button
 
-The response from server will be shown instead of Form.  
-In order to handle response OK and response Error  
-in server logic stablish a random number generator that roughly render  
-50% success and 50% error responses
+The server response will be displayed instead of the form.  
+To handle the OK response and the Error response  
+in the server logic set up a random number generator that makes approximately  
+50% of correct answers and 50% of error answers
 
 ```typescript
 export const handlers = [
