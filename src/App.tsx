@@ -26,8 +26,11 @@ const initialState: Record<StateKeys, StateValue> = {
   other: { value: "", errors: [] },
 };
 type FormState = typeof initialState;
-type FormActions = { type: StateKeys; payload: string };
+type FormActions = { type: StateKeys; payload: string } | { type: "reset" };
 function formReducer(state: FormState, action: FormActions): FormState {
+  if (action.type === "reset") {
+    return initialState;
+  }
   const validated = validator[action.type](action.payload);
   if (validated === null) {
     return { ...state, [action.type]: { ...state[action.type], value: action.payload, errors: [] } };
@@ -91,6 +94,12 @@ function App() {
       console.log({ error });
     }
   };
+  const onReset = () => {
+    dispatch({ type: "reset" });
+    setIsFormValid(false);
+    setFormData(null);
+    setServerResponse(null);
+  };
   const fieldEventHandler = (evt: ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value } = evt.target;
     dispatch({ type: name as StateKeys, payload: value });
@@ -114,6 +123,7 @@ function App() {
               hasError={!!state[field.name]["errors"].length}
               errorMessage={state[field.name]["errors"]?.[0]?.message ?? undefined}
               onInputChange={fieldEventHandler}
+              value={state[field.name]["value"]}
             />
           </div>
         ))}
@@ -154,12 +164,14 @@ function App() {
       </fieldset>
       <fieldset className={styles.boxes}>
         <div className={styles.buttonWrapper}>
-          <button disabled={!isFormValid} className={styles.btnSubmit}>
+          <button onClick={() => onSubmit} disabled={!isFormValid} className={styles.btnSubmit}>
             SUBMIT
           </button>
         </div>
         <div className={styles.buttonWrapper}>
-          <button>RESET</button>
+          <button type="reset" onClick={onReset}>
+            RESET
+          </button>
         </div>
       </fieldset>
     </form>
